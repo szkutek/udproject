@@ -113,8 +113,8 @@ def save_to_database(id,link,location,lat,long,query,company,job_title,employ_ty
     
     server = 'ud-project.database.windows.net' 
     database = 'UD_Project' 
-    username = 'ud_admin@ud-project' 
-    password = 'aoud_project!1311' 
+    username = '' 
+    password = '' 
     
     conn = pyodbc.connect(
     r'DRIVER={ODBC Driver 13 for SQL Server};'
