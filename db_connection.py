@@ -23,6 +23,10 @@ conn = pyodbc.connect(
 
 cursor = conn.cursor()
 
+cursor.execute("DROP TABLE QUERY")
+cursor.execute("DROP TABLE MAIN")
+cursor.execute("DROP TABLE NEW_OFFERS")
+
 
 create_table_main = """
     CREATE TABLE MAIN(
@@ -37,7 +41,6 @@ create_table_main = """
             DATE_BEGIN DATE,
             DATE_END DATE,
             DATE_VALID DATE,
-            SALARY VARCHAR(50),
             SPONSORED BIT,
             LANGUAGE CHAR(2),
             KEYWORDS VARCHAR(400),
@@ -66,17 +69,54 @@ create_table_new_offers = """
             EMPLOY_TYPE VARCHAR(200),
             DATE_BEGIN DATE,
             DATE_VALID DATE,
-            SALARY VARCHAR(50),
             SPONSORED BIT,
             LANGUAGE CHAR(2),
             KEYWORDS VARCHAR(400),
             OFFER_DES VARCHAR(8000))
     """
     
+jobs = """CREATE TABLE Jobs (
+  job_id          INT NOT NULL,
+  salary_low      INT,
+  salary_up       INT,
+  salary_currency VARCHAR(10),
+  contract_type   VARCHAR(20),
+  relocate        INT,
+  PRIMARY KEY (job_id),
+  FOREIGN KEY (job_id) REFERENCES MAIN (ID)
+)"""
+
+JobResp = """CREATE TABLE JobResps (
+  job_id INT         NOT NULL,
+  resp   VARCHAR(50) NOT NULL,
+  PRIMARY KEY (job_id, resp),
+  FOREIGN KEY (job_id) REFERENCES Jobs (job_id)
+)"""
+
+JobQuals = """CREATE TABLE JobQuals (
+  job_id INT         NOT NULL,
+  qual   VARCHAR(50) NOT NULL,
+  PRIMARY KEY (job_id, qual),
+  FOREIGN KEY (job_id) REFERENCES Jobs (job_id)
+)"""
+
+
+JobTechs ="""CREATE TABLE JobTechs (
+  job_id INT         NOT NULL,
+  tech   VARCHAR(50) NOT NULL,
+  PRIMARY KEY (job_id, tech),
+  FOREIGN KEY (job_id) REFERENCES Jobs (job_id)
+)"""
+
 cursor.execute(create_table_main)
 cursor.execute(create_table_query)
 cursor.execute(create_table_new_offers)
-
+cursor.execute(jobs)
+cursor.execute(resp)
+cursor.execute(qual)
+cursor.execute(JobResp)
+cursor.execute(JobQuals)
+cursor.execute(JobTechs)
 
 
 
