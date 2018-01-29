@@ -1,9 +1,6 @@
-
 import pyodbc
 import re
 import nltk
-
-
 
 
 def common_elements(list1, list2):
@@ -18,7 +15,7 @@ def lemmatize(tokens):
     return list(set(words))
 
 
-def main(id,tekst):
+def main(id, tekst):
     tokens = nltk.word_tokenize(tekst)
 
     keywords = {'quals': ['required', 'requirements', 'skills', 'competency', 'competencies'],
@@ -81,56 +78,36 @@ def main(id,tekst):
     relocate = p.search(tekst)
     relocate = int(relocate is not None)
     print(relocate)
-    
+
     ## TECHNOLOGIES
     technologies = ['Java', 'SAP', 'JavaScript', '\.NET', 'Angular', 'PHP', 'iOS', 'Anroid', 'C\+\+', 'Sharepoint',
                     'SQL', 'Linux', 'Big Data', 'DevOps', 'Test Automation']
     p = re.compile('|'.join(technologies), re.IGNORECASE)
-    tech_res = p.findall(row.OFFER_DES)
+    tech_res = p.findall(tekst)
     tech_res = frozenset([r.lower() for r in tech_res])
-    
 
-    
-    server = 'ud-project.database.windows.net' 
-    database = 'UD_Project' 
-    username = 'ud_admin@ud-project' 
-    password = '95f6d74684f884b4d841e5b9b700!' 
-    
+    server = 'ud-project.database.windows.net'
+    database = 'UD_Project'
+    username = ''
+    password = ''
+
     db = pyodbc.connect(
         r'DRIVER={ODBC Driver 13 for SQL Server};'
-        r'SERVER='+server+';'
-        r'DATABASE='+database+';'
-        r'UID='+username+';'
-        r'PWD='+password, autocommit = True
-        )
-    
+        r'SERVER=' + server + ';'
+                              r'DATABASE=' + database + ';'
+                                                        r'UID=' + username + ';'
+                                                                             r'PWD=' + password, autocommit=True)
+
     cursor = db.cursor()
 
-    try:
-        cursor.execute(
-            'INSERT INTO Jobs (job_id, salary_low, salary_up, salary_currency, contract_type, relocate) VALUES (?,?,?,?,?,?)',
-            (id, salary_min, salary_max, currency, contract_type, relocate)
-        )
-        
-    except:
-       pass
+    cursor.execute(
+        'INSERT INTO Jobs (job_id, salary_low, salary_up, salary_currency, contract_type, relocate) VALUES (?,?,?,?,?,?)',
+        (id, salary_min, salary_max, currency, contract_type, relocate))
 
     for r in resps:
-        try:
-            cursor.execute('INSERT INTO JobResps (job_id, resp) VALUES (?,?)', (id, r))
-            
-        except:
-            pass
+        cursor.execute('INSERT INTO JobResps (job_id, resp) VALUES (?,?)', (id, r))
     for q in quals:
-        try:
-            cursor.execute('INSERT INTO JobQuals (job_id, qual) VALUES (?,?)', (id, q))
-            
-        except:
-            pass
-   for t in tech_res:
-        try:
-            cursor.execute('INSERT INTO JobTechs (job_id, tech) VALUES (?,?)', (row.ID, t))
-        except:
-            pass
-
+        cursor.execute('INSERT INTO JobQuals (job_id, qual) VALUES (?,?)', (id, q))
+    for t in tech_res:
+        cursor.execute('INSERT INTO JobTechs (job_id, tech) VALUES (?,?)', (id, t))
     db.close()

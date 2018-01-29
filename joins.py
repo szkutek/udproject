@@ -11,8 +11,8 @@ import parse_text
 
 server = 'ud-project.database.windows.net' 
 database = 'UD_Project' 
-username = 'ud_admin@ud-project' 
-password = '95f6d74684f884b4d841e5b9b700!' 
+username = ''
+password = ''
 
 conn = pyodbc.connect(
     r'DRIVER={ODBC Driver 13 for SQL Server};'
